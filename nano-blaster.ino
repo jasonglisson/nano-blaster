@@ -1,33 +1,19 @@
 #include <Adafruit_NeoPixel.h>
-#include <SoftwareSerial.h>
-#include <DFPlayerMini_Fast.h>
 
 #define BUTTON_PIN 2
 #define PIXEL_PIN 6  // Digital IO pin connected to the NeoPixels.
 #define PIXEL_COUNT 16  // Number of NeoPixels
 
-SoftwareSerial mySerial(10, 11); // RX, TX
-DFPlayerMini_Fast myDFPlayer;
-
 // Declare our NeoPixel strip object:
 Adafruit_NeoPixel strip(PIXEL_COUNT, PIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
 boolean oldState = HIGH;
+int mode     = 0;    // Currently-active animation mode, 0-9
 
 void setup() {
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   strip.begin(); // Initialize NeoPixel strip object (REQUIRED)
   strip.show();  // Initialize all pixels to 'off'
-  Serial.begin(115200);
-  mySerial.begin(9600);
- 
-  myDFPlayer.begin(mySerial);
-}
-
-void blaster() {
-  myDFPlayer.volume(20); //set volume low
-  myDFPlayer.play(1); //play mp3 file with leading identifier "0001"
-  while(0); //halt
 }
 
 void loop() {
@@ -42,8 +28,7 @@ void loop() {
     newState = digitalRead(BUTTON_PIN);
     if(newState == LOW) {      // Yes, still low
       colorWipe(strip.Color(255,   0,   0), 7);    // Red
-      colorWipe(strip.Color(  0,   0,   0), 2);    // Black/off
-      blaster();      
+      colorWipe(strip.Color(  0,   0,   0), 2);    // Black/off      
     }
   }
 
